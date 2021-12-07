@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "module": "es6",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "sourceMap": true,
+    "baseUrl": "./",
+    "outDir": "../../build/tsc/main",
+    "moduleResolution": "node",
+    "paths": {
+      "*": [
+        "*",
+        "../common/*",
+        "../../typisch/src/core/*",
+        "../../typisch/src/electron/*",
+        "../../typisch/src/earthapp/*",
+        "../../node_modules/*"
+      ]
+    },
+    "target": "ES2020",
+    "rootDir": "../.."
+  },
+  "include": [
+    "**/*",
+    "../common/**/*",
+    "../../typisch/src/core/**/*",
+    "../../typisch/src/electron/**/*",
+    "../../typisch/src/earthapp/**/*.ts"
+  ]
+}

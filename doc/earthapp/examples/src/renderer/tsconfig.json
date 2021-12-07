@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "module": "es6",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "jsx": "react",
+    "strict": true,
+    "sourceMap": true,
+    "baseUrl": "./",
+    "outDir": "../../build/tsc/renderer",
+    "moduleResolution": "node",
+    "paths": {
+      "*": [
+        "*",
+        "../common/*",
+        "../../typisch/src/core/*",
+        "../../typisch/src/electron/*",
+        "../../typisch/src/earthapp/*",
+        "../../node_modules/*"
+      ]
+    },
+    "target": "ES2020",
+    "rootDir": "../.."
+  },
+  "include": [
+    "**/*",
+    "../common/**/*",
+    "../../typisch/src/core/**/*",
+    "../../typisch/src/electron/**/*",
+    "../../typisch/src/earthapp/**/*"
+  ]
+}
