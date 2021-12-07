@@ -7,6 +7,7 @@ import de.undercouch.gradle.tasks.download.Download
 
 val srcCommon = file("src/common")
 val srcMain = file("src/main")
+val srcTypisch = file("typisch/src")
 val srcRenderer = file("src/renderer")
 val buildTscMain = File(buildDir, "tsc/main")
 val buildTscRenderer = File(buildDir, "tsc/renderer")
@@ -18,11 +19,12 @@ val srcLock = ReentrantLock()
 tasks {
 
     val tscMain by registering {
-        val configFile = file("tsconfig.main.json")
+        val configFile = file("src/main/tsconfig.json")
 
     	inputs.file(configFile)
-        inputs.dir(srcCommon)
         inputs.dir(srcMain)
+        inputs.dir(srcCommon)
+        inputs.dir(srcTypisch)
         outputs.dir(buildTscMain)
 
         doLast {
@@ -50,11 +52,12 @@ tasks {
     }
 
     val tscRenderer by registering {
-		val configFile = file("tsconfig.renderer.json")
+		val configFile = file("src/renderer/tsconfig.json")
 
 		inputs.file(configFile)
-		inputs.dir(srcCommon)
 		inputs.dir(srcRenderer)
+		inputs.dir(srcCommon)
+        inputs.dir(srcTypisch)
 		outputs.dir(buildTscRenderer)
 
         doLast {
