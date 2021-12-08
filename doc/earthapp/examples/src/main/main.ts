@@ -55,7 +55,7 @@ async function appMain() {
 
     const createWindow = (): void => {
 
-        (async () => {
+        launch(async () => {
             try {
 
                 console.log("Begin app window init")
@@ -102,15 +102,20 @@ async function appMain() {
                 process.exit(3)
             }
 
-        })()
+        })
 
         handleIpcMainLogs()
 
         ipcMain.handle("app.request", async (event, req: MainRequest, ...args) => {
             console.log(`got request ${req} ${JSON.stringify(args)}`)
             const handler: any = await requestHandler(req)
-            const res = await handler(...args)
-            console.log("handled request")
+            const handlerRes = handler(...args);
+            const promised = handlerRes instanceof Promise;
+            console.log(`handled request, now ${promised ? "awaiting" : "returning"} result`)
+            const res = promised ? await handlerRes : handlerRes;
+            if (promised) {
+                console.log("have result")
+            }
             return res
         })
 
