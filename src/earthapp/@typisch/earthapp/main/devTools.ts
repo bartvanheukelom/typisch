@@ -1,5 +1,5 @@
 import path from "path";
-import {launch} from "../common/async";
+import {launch} from "@typisch/core/async";
 import {app, globalShortcut, session, BrowserWindow} from 'electron';
 
 export function installReactDevTools() {
