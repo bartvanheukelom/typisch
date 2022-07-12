@@ -2,8 +2,10 @@ import React, {useMemo, useRef, useState} from "react";
 
 export function useUpdater() {
 
-    const ucRef = useRef<number>()
     const [updateCount, setUpdateCount] = useState(0);
+
+    const ucRef = useRef<number>();
+    ucRef.current = updateCount;
 
     return {
         update() {
