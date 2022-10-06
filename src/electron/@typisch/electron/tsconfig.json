@@ -1,0 +1,23 @@
+{
+  "references": [
+    {
+      "path": "../../../core/@typisch/core"
+    }
+  ],
+  "compilerOptions": {
+    "allowJs": true,
+    "module": "es6",
+    "lib": ["es2021", "dom"],
+    "types": [],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "sourceMap": true,
+    "outDir": "../../../../build/electron",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "target": "ES2020",
+    "rootDir": ".",
+  }
+}

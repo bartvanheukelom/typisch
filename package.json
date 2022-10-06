@@ -1,0 +1,11 @@
+{
+  "name": "typisch",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "typescript": "^4.8.4",
+    "electron": "^16.0.3"
+  },
+  "dependencies": {
+  }
+}

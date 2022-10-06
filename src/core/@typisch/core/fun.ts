@@ -1,5 +1,7 @@
+import {foobar} from "./async";
 
 export function run<T>(f: () => T): T {
+    foobar();
     return f()
 }
 
