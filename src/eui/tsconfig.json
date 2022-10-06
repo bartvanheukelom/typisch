@@ -1,29 +1,13 @@
 {
   "references": [
-    {
-      "path": "../core"
-    }
+    { "path": "../core" },
+    { "path": "../react" }
   ],
+  "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "composite": true,
-    "allowJs": true,
-    "module": "es6",
     "lib": ["es2021", "dom"],
-    "types": [],
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "strict": true,
-    "sourceMap": true,
-    "outDir": "../../build/eui",
-    "moduleResolution": "node",
-    "isolatedModules": true,
-    "target": "ES2020",
     "jsx": "react",
+    "outDir": "../../build/eui",
     "rootDir": ".",
-    "paths": {
-      "*": ["../../node_modules/*"],
-      "@typisch/core/*": ["../core/*"]
-    },
   }
 }

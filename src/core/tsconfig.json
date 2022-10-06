@@ -1,20 +1,7 @@
 {
+  "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "composite": true,
-    "allowJs": true,
-    "module": "es6",
-    "declaration": true,
-    "lib": ["es2021"],
-    "types": [],
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "strict": true,
-    "sourceMap": true,
     "outDir": "../../build/core",
-    "moduleResolution": "node",
-    "isolatedModules": true,
-    "target": "ES2020",
     "rootDir": "."
   }
 }

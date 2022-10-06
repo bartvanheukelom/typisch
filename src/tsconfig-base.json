@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "allowJs": true,
+    "module": "es6",
+    "lib": ["es2021"],
+    "types": [],
+    "typeRoots": ["./node_modules/@types"],
+    "baseUrl": "./",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "target": "ES2020",
+    "jsx": "react",
+    "paths": {
+      "*": ["../node_modules/*"],
+      "@typisch/*": ["./*"]
+    },
+  }
+}
