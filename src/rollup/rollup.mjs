@@ -8,10 +8,10 @@ export function createResolveId(
     forbiddenModules,
     packDirs = [],
 ) {
-    return function (importee, importer) {
-        if (importee.indexOf("typisch") !== -1) {
-            console.log(`resolve import ${importee} by ${importer}`);
-        }
+    return function (importee, importer, options) {
+        // if (importee.indexOf("typisch") !== -1) {
+            // console.log(`resolve import ${importee} by ${importer}`);
+        // }
         if (forbiddenModules && forbiddenModules.indexOf(importee) !== -1) {
             throw new Error(`Trying to import forbidden module ${importee} in renderer, by ${importer}`)
         }
@@ -32,8 +32,8 @@ export function createResolveId(
                 for (const [pack, dir] of packDirs) {
                     if (importee == pack || importee.startsWith(pack + "/")) {
                         const f = dir + importee.substring(pack.length);
-                        console.log(`pack resolution: ${importee} -> ${f}`);
-                        return this.resolve(f, importer);
+                        // console.log(`pack resolution: ${importee} -> ${f}`);
+                        return this.resolve(f, importer, options);
                     }
                     // if (importee.startsWith(pack + "/")) {
                     //     const f = `${dir}/${importee.substring(pack.length + 1)}.js`;
@@ -59,10 +59,18 @@ export function createResolveId(
                         res = f;
                     }
                 }
+                if (res === null) {
+                    // TODO is this not default?
+                    const f = `${importee}/index.js`;
+                    if (fs.existsSync(f)) {
+                        // console.log(`resolved to concrete file: ${f}`);
+                        res = f;
+                    }
+                }
             }
         }
         if (res != null) {
-            console.log(`resolveId: ${importer} import "${importee}" -> ${res}`)
+            // console.log(`resolveId: ${importer} import "${importee}" -> ${res}`)
         }
         return res
     }

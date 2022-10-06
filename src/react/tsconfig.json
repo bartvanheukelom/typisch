@@ -1,0 +1,29 @@
+{
+  "references": [
+    {
+      "path": "../core"
+    }
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "allowJs": true,
+    "module": "es6",
+    "lib": ["es2021", "dom"],
+    "types": [],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "sourceMap": true,
+    "outDir": "../../build/react",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "target": "ES2020",
+    "jsx": "react",
+    "rootDir": ".",
+    "paths": {
+      "*": ["../../node_modules/*"],
+      "@typisch/core/*": ["../core/*"]
+    },
+  }
+}

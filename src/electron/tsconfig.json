@@ -1,11 +1,10 @@
 {
   "references": [
     {
-      "path": "../../../core/@typisch/core"
+      "path": "../core"
     }
   ],
   "compilerOptions": {
-    "composite": true,
     "allowJs": true,
     "module": "es6",
     "lib": ["es2021", "dom"],
@@ -15,15 +14,14 @@
     "noImplicitAny": true,
     "strict": true,
     "sourceMap": true,
-    "outDir": "../../../../build/eui",
+    "outDir": "../../build/electron",
     "moduleResolution": "node",
     "isolatedModules": true,
     "target": "ES2020",
-    "jsx": "react",
     "rootDir": ".",
     "paths": {
-      "*": ["../../../../node_modules/*"],
-      "@typisch/core/*": ["../../../core/@typisch/core/*"]
-    },
+      "*": ["../../node_modules/*"],
+      "@typisch/core/*": ["../core/*"]
+    }
   }
 }
