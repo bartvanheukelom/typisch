@@ -1,0 +1,19 @@
+{
+  "references": [
+    { "path": "src/core" },
+    { "path": "src/electron" },
+    { "path": "src/eui" },
+    { "path": "src/node" },
+    { "path": "src/react" }
+  ],
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "build/_root",
+    "rootDir": ".",
+    "paths": {
+      "*": ["./node_modules/*"],
+      "@typisch/*": ["./src/*"]
+    },
+  },
+  "files": []
+}
