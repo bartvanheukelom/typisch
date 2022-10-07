@@ -5,7 +5,7 @@ import {
     EuiGlobalToastList,
 } from "@elastic/eui";
 import {Toast} from "@elastic/eui/src/components/toast/global_toast_list";
-import {foobar} from "@typisch/core/async";
+
 
 
 export type RenderFunction = (props: { appCtx: AppContext }) => JSX.Element
@@ -23,9 +23,6 @@ export function appHooks(): {
     ctx: AppContext,
     comps: () => JSX.Element,
 } {
-
-    foobar();
-
     const componentState = {
         flyout: useState<RenderFunction | null>(null),
         modals: useState<RenderFunction[]>([]),

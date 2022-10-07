@@ -9,6 +9,5 @@
     "lib": ["es2021"],
     "types": ["node"],
     "outDir": "../../build/node",
-    "rootDir": ".",
   }
 }
