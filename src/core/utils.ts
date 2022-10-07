@@ -1,5 +1,12 @@
 import {Meters, MetersPerSecond, Nullable, Radians, RadiansPerSecond, Seconds} from "./types";
-export { sleep, launch } from "./async";
+
+
+
+export type SourceOf<T> = T extends Function ? never : (T | (() => T));
+
+export function acquire<T>(src: SourceOf<T>): T {
+    return typeof src == "function" ? src() : src;
+}
 
 /**
  * Use to add type checking to a literal.
