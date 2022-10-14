@@ -17,7 +17,7 @@ export interface AppContext {
     showToast(toast: ToastShow): void;
 }
 
-export const TreeAppContext = React.createContext<AppContext | undefined>(undefined)
+export const TreeAppContext = React.createContext<AppContext | undefined>(undefined);
 
 export function appHooks(): {
     ctx: AppContext,
