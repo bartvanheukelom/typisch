@@ -193,3 +193,7 @@ export function onceFunc<T, PD extends { value?: () => T }>(target: any, prop: s
 export function errString(e: unknown): string {
     return `${(e as any)?.stack || e}`;
 }
+
+export function formatFileSize(size: number) {
+    return size.toLocaleString() + " B"
+}

@@ -1,8 +1,6 @@
 import {Pm} from "./lang";
 import {Milliseconds} from "./types";
 
-import {AsyncFunction} from "async"; // dependency, not this module
-
 // TEMP FIX AFTER REMOVING dom LIB
 // TODO properly
 declare function setTimeout(cb: () => void, delay: number): void;

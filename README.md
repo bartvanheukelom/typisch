@@ -1,8 +1,24 @@
-# typisch
+# Typisch
 
 A collection of Typescript, React, Electron, etc. utility code and types.
 
-> The name _typisch_ is Dutch for _typical_
+> The name _Typisch_ is Dutch for _Typical_
+
+## Building and Using
+
+- Unfortunately you must use `npm install --force` because `@elastic/eui` doesn't accept the newer version of `typescript` that is used.
+- Build each package (see below) you want to use with `npx tsc --build src/PACKAGENAME`,  
+  or build them all with `npx tsc --build` in the root dir.
+- Copy the results from `build` into your project's `node_modules`, or link them from your dependencies like so:
+
+```
+"dependencies": {
+  "@typisch/core": "file:../SOMETHING/typisch/build/core",
+  "@typisch/react": "file:../SOMETHING/typisch/build/react",
+  ...
+```
+
+The recommended way to consume this library is to include it as a Git submodule in your project and make the steps above an automatic part of your build process, e.g. by using `references` in `tsconfig.json`.
 
 ## Packages
 

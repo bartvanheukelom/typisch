@@ -25,7 +25,3 @@ export function ceilTo(num: number, div: number): number {
 export function roundTo(num: number, div: number): number {
     return div * Math.round(num / div);
 }
-
-export function formatFileSize(size: number) {
-    return size.toLocaleString() + " B"
-}
