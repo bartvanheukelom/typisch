@@ -1,0 +1,16 @@
+{
+  "references": [
+    { "path": "../core" },
+    { "path": "../react" },
+    { "path": "../node" },
+    { "path": "../electron" },
+    { "path": "../eui" }
+  ],
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "lib": ["es2021", "dom"],
+    "jsx": "react",
+    "outDir": "../../build/earthapp",
+    "rootDir": ".",
+  }
+}

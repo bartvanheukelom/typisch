@@ -23,6 +23,11 @@ export type JsonElement = null | boolean | string | number | JsonObject | JsonAr
 export type JsonObject = { readonly [key: string]: JsonElement };
 export type JsonArray = JsonElement[];
 
+/**
+ * Use this alias for `any` when you "temporarily" need it to make something work _right now_,
+ * but it can and should be replaced with a better type SoonTM.
+ */
+export type DirtyAny = any;
 
 // ===================== GENERIC ============================ //
 

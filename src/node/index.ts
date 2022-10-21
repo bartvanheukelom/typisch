@@ -2,7 +2,7 @@ import {typischCoreNop} from "@typisch/core";
 import {Logger, logger} from "./logging";
 import {Pm} from "@typisch/core/lang";
 import {Uuid} from "@typisch/core/types";
-import {formatFileSize} from "@typisch/core/math";
+import {formatFileSize} from "@typisch/core/utils";
 
 import * as path from "path";
 import {randomBytes, randomUUID} from "crypto";

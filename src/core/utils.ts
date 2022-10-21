@@ -1,6 +1,8 @@
 import {Meters, MetersPerSecond, Nullable, Radians, RadiansPerSecond, Seconds} from "./types";
 
-
+import { formatFileSize as formatFileSizeNew } from "./numFormats";
+// export { formatFileSize } from "./numFormats"; - TODO gives runtime error?
+export const formatFileSize = formatFileSizeNew;
 
 export type SourceOf<T> = T extends Function ? never : (T | (() => T));
 
@@ -194,6 +196,10 @@ export function errString(e: unknown): string {
     return `${(e as any)?.stack || e}`;
 }
 
-export function formatFileSize(size: number) {
-    return size.toLocaleString() + " B"
-}
+/**
+ * `true`. Use `while (loopNotBroken) { ... }` instead of `while (true) { ... }` to:
+ *  - Communicate that the loop is not actually infinite, but will use `break`.
+ *  - Shut up linters that complain about a "constant condition" there.
+ */
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const loopNotBroken: boolean = true;
