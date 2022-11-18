@@ -25,6 +25,11 @@ export function missingCase(name: never): never {
     throw new Error(`switch is missing case ${name} (and TS didn't catch it)`);
 }
 
+/**
+ * Checks if a condition is true, and throws an error if it's not.
+ * @param condition The condition to check
+ * @param errorMessage The error message to throw if the condition is false. This can be either a string or a function that returns a string.
+ */
 export function check(
     condition: unknown,
     errorMessage: (() => string) | string = "Check failed"
