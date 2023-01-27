@@ -1,13 +1,13 @@
-import {app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, session} from 'electron';
+import {app, BrowserWindow, ipcMain, nativeTheme, globalShortcut, session} from "electron";
 import windowStateKeeper from "electron-window-state";
-import { DbSelectRequest } from "/ipc";
+import { DbSelectRequest } from "./ipc";
 import { openDevTools, showMenuBar } from "./settings";
 import {db} from "./db";
 import {MainRequest} from "../common/ipc";
 import {requestHandler} from "./requestHandler";
 import {tempMainAction} from "./tempMainAction";
 import path from "path";
-import {launch} from "/cmisc";
+import {launch} from "../common/cmisc";
 import {ipcRenderer} from "@typisch/electron/electronModule";
 import {pimpConsoleLog} from "@typisch/earthapp/main/logging";
 import {installReactDevTools, setUpDevTools} from "@typisch/earthapp/main/devTools";

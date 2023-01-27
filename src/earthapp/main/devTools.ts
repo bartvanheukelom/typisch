@@ -1,7 +1,7 @@
 import {launch} from "@typisch/core/async";
 import {errString} from "@typisch/core/utils";
 
-import {app, globalShortcut, session, BrowserWindow} from 'electron';
+import {app, globalShortcut, session, BrowserWindow} from "electron";
 import path from "path";
 
 
