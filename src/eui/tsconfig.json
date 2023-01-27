@@ -8,6 +8,6 @@
     "lib": ["es2021", "dom"],
     "jsx": "react",
     "outDir": "../../build/eui",
-    "rootDir": ".",
+    "rootDir": "."
   }
 }

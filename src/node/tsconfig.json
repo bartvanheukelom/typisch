@@ -8,6 +8,6 @@
   "compilerOptions": {
     "lib": ["es2021"],
     "types": ["node"],
-    "outDir": "../../build/node",
+    "outDir": "../../build/node"
   }
 }

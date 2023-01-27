@@ -11,6 +11,6 @@
     "lib": ["es2021", "dom"],
     "jsx": "react",
     "outDir": "../../build/earthapp",
-    "rootDir": ".",
+    "rootDir": "."
   }
 }

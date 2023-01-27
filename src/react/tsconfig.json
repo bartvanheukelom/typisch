@@ -9,6 +9,6 @@
     "lib": ["es2021", "dom"],
     "jsx": "react",
     "outDir": "../../build/react",
-    "rootDir": ".",
+    "rootDir": "."
   }
 }
