@@ -5,6 +5,11 @@ export type Writable<T> = {
     -readonly [P in keyof T]: T[P];
 };
 
+/**
+ * Make properties of T whose keys are in the union K required.
+ */
+export type Require<T, K extends keyof T> = T & Required<Pick<T, K>>;
+
 export type Brand<K, T> = K & { __brand: T }
 export type Brand2<K, T> = K & { __brand2: T }
 // TODO doesn't work if K is a union type
