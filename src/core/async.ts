@@ -90,3 +90,7 @@ export async function withTimeout<T>(time: Milliseconds, f: PromiseOrAsync<T>): 
 export function sync<T>(f: () => T): T {
     return f();
 }
+
+export async function forEachAsync<T>(items: ReadonlyArray<T>, task: (v: T) => Promise<unknown>) {
+    await Promise.all(items.map(task));
+}

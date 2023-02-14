@@ -7,7 +7,7 @@ import {MainRequest} from "../common/ipc";
 import {requestHandler} from "./requestHandler";
 import {tempMainAction} from "./tempMainAction";
 import path from "path";
-import {launch} from "../common/cmisc";
+import {launch} from "@typisch/core/async";
 import {ipcRenderer} from "@typisch/electron/electronModule";
 import {pimpConsoleLog} from "@typisch/earthapp/main/logging";
 import {installReactDevTools, setUpDevTools} from "@typisch/earthapp/main/devTools";

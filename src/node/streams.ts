@@ -7,12 +7,22 @@ import {Duplex, Readable, Transform} from "stream";
 /**
  * Reads the entire stream and returns it as a Buffer. Requires enough memory to, for a short time, store the entire contents of the stream twice.
  */
-export async function readIntoBuf(stream: Readable): Promise<Buffer> {
-    const fRead: Buffer[] = []
+export async function readIntoBuf(
+    stream: Readable,
+    options: {
+        knownSize?: number;
+    } = {}
+): Promise<Buffer> {
+    const fRead: Buffer[] = [];
+    let size = 0;
     for await (const chunk of stream) {
-        fRead.push(chunk as Buffer)
+        fRead.push(chunk as Buffer);
+        size += chunk.length;
+        if (options.knownSize && size > options.knownSize) {
+            throw new Error(`readIntoBuf: Read >= ${formatFileSize(size)} but expected exactly ${formatFileSize(options.knownSize)}`);
+        }
     }
-    return Buffer.concat(fRead)
+    return Buffer.concat(fRead);
 }
 
 /**

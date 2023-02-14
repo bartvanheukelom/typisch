@@ -18,6 +18,7 @@ export function brand<B, V>(v: V): B extends Brand<infer K, infer T> ? (V & K ex
 }
 
 export type ValueOf<T> = T[keyof T];
+type SetVal<T extends Set<unknown>> = T extends Set<infer V> ? V : unknown;
 export type Arg<F extends (...args: any) => any> = Parameters<F>[0]
 export type MethodArg<I, F extends keyof I> = I[F] extends (...args: any) => any ? Parameters<I[F]>[0] : never;
 export type Promised<T> = Promise<Awaited<T>>;

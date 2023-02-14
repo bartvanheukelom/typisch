@@ -1,0 +1,36 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-extra-non-null-assertion": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-this-alias": "off",
+        "no-empty": "off",
+        "no-restricted-imports": ["error", { "patterns": [
+            { "group": ["../typisch/*"], "message": "use '@typisch/...'" }
+        ] }]
+    },
+    "parser": "@typescript-eslint/parser",
+    "overrides": [{
+        "files": "*.ts",
+        "parserOptions": {
+            "project": [
+                "tsconfig.json"
+            ]
+        }
+    }],
+    "ignorePatterns": [
+        "/",
+        "!/src"
+    ]
+}

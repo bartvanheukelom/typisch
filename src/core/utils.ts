@@ -203,3 +203,10 @@ export function errString(e: unknown): string {
  */
 // eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const loopNotBroken: boolean = true;
+
+/**
+ * "2021-11-06T11_33_44"
+ */
+export function tsForFileName(): string {
+    return new Date().toISOString().split(":").join("_").substring(0, 19)
+}
