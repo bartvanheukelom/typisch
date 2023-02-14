@@ -29,3 +29,13 @@ export function useResettingState<T>(initial: T, deps: any[]): [T, (v: T) => voi
     }, deps);
     return vs;
 }
+
+/**
+ * Logs a message when the component mounts and unmounts.
+ */
+export function useMountLogger(name: string) {
+    useEffect(() => {
+        console.log(`${name} mounting`);
+        return () => console.log(`${name} unmounting`);
+    }, []);
+}
