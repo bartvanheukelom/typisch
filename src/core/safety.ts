@@ -3,26 +3,46 @@
  * Exhaustive switching tool:
  *
  * <pre>
- *     declare const bolean: true | false;
- *     switch (bolean) {
+ *     declare const bowlean: true | false;
+ *     switch (bowlean) {
  *         case true: ...; break;
  *         case false: ...; break;
- *         // bolean is now never
- *         default: missingCase(bolean); // throws if bolean is something else at runtime.
+ *         // bowlean is now never
+ *         default: missingCase(bowlean); // throws if bowlean is something else at runtime.
  *     }
  *
- *     declare const superbolean: true | false | "FileNotFound";
- *     switch (superbolean) {
+ *     declare const superbowlean: true | false | "FileNotFound";
+ *     switch (superbowlean) {
  *         case true: ...; break;
  *         case false: ...; break;
  *         // compile error because you forgot to handle "FileNotFound",
- *         // so superbolean is not a never.
- *         default: missingCase(superbolean);
+ *         // so superbowlean is not of type never but of "FileNotFound".
+ *         default: missingCase(superbowlean);
  *     }
  * </pre>
+ *
+ * By default the case value is used in the error message. You can override this by passing
+ * a function that extracts the display value from the case value.
+ * The case is passed as `any` because TS doesn't know that it's not actually a `never`.
+ * This can be useful in a situation like:
+ *
+ * <pre>
+ *     declare const animal: { kind: "cat", ... } | { kind: "dog", ... };
+ *     switch (animal.kind) {
+ *         case "cat": ...; break;
+ *         case "dog": ...; break;
+ *         default:
+ *             // missingCase(animal.kind); - compile error because animal is supposedly `never`, which has no property `kind`
+ *             // missingCase((animal as any).kind as never); - works, but then you lose the compile-time exhaustiveness check
+ *             missingCase(animal, a => a.kind);
+ *     }
+ * </pre>
+ *
+ * @param cas The case value that was not handled.
+ * @param name A function that returns a string representation of the case value.
  */
-export function missingCase(name: never): never {
-    throw new Error(`switch is missing case ${name} (and TS didn't catch it)`);
+export function missingCase(cas: never, name?: (cas: any) => any): never {
+    throw new Error(`switch is missing case ${name ? name(cas) : cas} (and TS didn't catch it)`);
 }
 
 /**
