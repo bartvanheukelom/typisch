@@ -1,4 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
+import {acquire, SourceOf} from "../core/utils";
 
 export function useUpdater() {
 
@@ -38,4 +39,20 @@ export function useMountLogger(name: string) {
         console.log(`${name} mounting`);
         return () => console.log(`${name} unmounting`);
     }, []);
+}
+
+/**
+ * State that is loaded from local storage, and saved to local storage when it changes.
+ * A local deserialized copy is kept in memory and used for subsequent reads.
+ * External changes to the stored value are not detected.
+ */
+export function useLocalStorage<T>(key: string, initialValue: SourceOf<T>): [v: T, setter: (a: T) => void] {
+    const [memVal, setMemVal] = useState<T>(() => {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : acquire(initialValue);
+    });
+    return [memVal, (v: T) => {
+        localStorage.setItem(key, JSON.stringify(v));
+        setMemVal(v);
+    }];
 }
