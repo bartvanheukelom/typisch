@@ -1,4 +1,4 @@
-import { IpcRenderer, IpcMain } from "electron";
+import type { IpcRenderer, IpcMain } from "electron";
 
 declare function require(module: string): any
 
