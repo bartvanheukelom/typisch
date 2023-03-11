@@ -210,3 +210,42 @@ export const loopNotBroken: boolean = true;
 export function tsForFileName(): string {
     return new Date().toISOString().split(":").join("_").substring(0, 19)
 }
+
+type CheckKeysOf<T, K extends (keyof T)[]> =
+    Exclude<keyof T, K[number]> extends never ? K : never;
+
+export function mapKeys<O, K extends (keyof O)[]>(
+    // must contain all keys of O
+    keys: CheckKeysOf<O, K>,
+    value: (key: K[number]) => any,
+): O {
+    const result: any = {};
+    for (const key of keys) {
+        result[key] = value(key);
+    }
+    return result;
+}
+
+declare const typeSymbolTrue: unique symbol;
+export type TTrue = typeof typeSymbolTrue;
+declare const typeSymbolFalse: unique symbol;
+export type TFalse = typeof typeSymbolFalse;
+
+/**
+ * `TTrue` if union type `S` includes at least all types in union `L`,
+ * `TTrue | TFalse` otherwise.
+ */
+type UnionCovers<S, L> =
+    L extends S ? TTrue : TFalse;
+
+// type TypeIfEqual<A, B> =
+//     A extends B ? (B extends A ? A : never) : never;
+// type xx = TypeIfEqual<"1"|"2", keyof { 1: 1, 2: 2, 3: 3 }> // FAIL returns "1"|"2"
+// type TypeIfEqual<A, B> =
+//     A extends B ? (B extends A ? A : never) : never;
+
+// if K is an array containing all and only names of properties of T, evaluates to K, else never
+
+type XX = CheckKeysOf<{ "foo": boolean, "bar": boolean }, ["foo", "bar"]>;
+
+type x = UnionCovers<"1"|"2", keyof { 1: 1, 2: 2, 3: 3 }>;
