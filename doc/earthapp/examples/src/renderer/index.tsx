@@ -3,7 +3,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 import './importIcons'
 import {sendLogsToRenderer} from "@typisch/electron/utils";
-import {appHooks} from "@typisch/earthapp/renderer/euiApp";
+import {appHooks} from "@typisch/eui/euiApp";
 
 sendLogsToRenderer()
 
