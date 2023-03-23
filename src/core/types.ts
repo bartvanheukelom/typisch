@@ -22,8 +22,11 @@ type SetVal<T extends Set<unknown>> = T extends Set<infer V> ? V : unknown;
 export type Arg<F extends (...args: any) => any> = Parameters<F>[0]
 export type MethodArg<I, F extends keyof I> = I[F] extends (...args: any) => any ? Parameters<I[F]>[0] : never;
 export type Promised<T> = Promise<Awaited<T>>;
-export type Nullable<T> = T | null;
 export type AsyncReturnType<T extends (...args: any) => any> = Awaited<ReturnType<T>>;
+
+export type Nullable<T> = T | null;
+export type Optional<T> = T | undefined;
+export type Maybe<T> = T | null | undefined;
 
 export type JsonElement = null | boolean | string | number | JsonObject | JsonArray;
 export type JsonObject = { readonly [key: string]: JsonElement };
