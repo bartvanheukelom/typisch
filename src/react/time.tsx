@@ -13,3 +13,13 @@ export function Clock(props: {
     }, []);
     return <span>{format(date)}</span>;
 }
+
+export function useInterval(callback: () => void, immediate: boolean, period: number, deps: any[] = []) {
+    useEffect(() => {
+        if (immediate) {
+            callback();
+        }
+        const timer = setInterval(callback, period);
+        return () => clearInterval(timer);
+    }, [callback, period, ...deps]);
+}
