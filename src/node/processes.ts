@@ -46,6 +46,10 @@ export async function readProcessOut(
     return await output;
 }
 
+/**
+ * This function waits for a process to complete successfully.
+ * Returns a promise which resolves when the process completes successfully, or rejects with the process's exit code.
+ */
 export function processSuccess(
     name: string,
     process: ChildProcessByStdio<any, any, any>,
