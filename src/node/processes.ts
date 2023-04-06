@@ -4,6 +4,7 @@ import {avoid} from "@typisch/core/lang";
 
 import child_process, {ChildProcessByStdio} from "child_process";
 import {Readable} from "stream";
+import {signal} from "@tensorflow/tfjs-node-gpu";
 
 
 /**
@@ -32,10 +33,13 @@ export async function run(command: string, args: string[] = []): Promise<void> {
 }
 
 /**
- * This function reads the output from a process.
- * @param name The name of the process.
+ * This function fully reads the output (on stdout) from a process,
+ * _and_ waits for the process to complete successfully.
+ * Does not read stderr, so make sure it's ignored, inherited, or won't produce more output than the buffer can hold.
+ *
+ * @param name The name for the process to use in error messages.
  * @param process The process to read from.
- * @returns The output from the process.
+ * @returns Promise which resolves to the full output from the process, or rejects with a `ProcessError`.
  */
 export async function readProcessOut(
     name: string,
@@ -48,7 +52,7 @@ export async function readProcessOut(
 
 /**
  * This function waits for a process to complete successfully.
- * Returns a promise which resolves when the process completes successfully, or rejects with the process's exit code.
+ * Returns a promise which resolves when the process completes successfully, or rejects with a `ProcessError`.
  */
 export function processSuccess(
     name: string,
@@ -59,7 +63,7 @@ export function processSuccess(
         if (process.exitCode === 0) {
             return;
         } else {
-            throw new Error(`Process '${name}' (previously) closed with code ${process.exitCode}`);
+            throw new ProcessError(`Process '${name}' (previously) closed with code ${process.exitCode} by signal ${signal}`, process.exitCode, process.signalCode);
         }
     }
 
@@ -68,8 +72,14 @@ export function processSuccess(
             if (code == 0) {
                 resolve()
             } else {
-                reject(new Error(`Process '${name}' closed with code ${code} by signal ${signal}`));
+                reject(new ProcessError(`Process '${name}' closed with code ${code} by signal ${signal}`, code, signal));
             }
         });
     });
+}
+
+class ProcessError extends Error {
+    constructor(message: string, public code: number | null, public signal: NodeJS.Signals | null) {
+        super(message);
+    }
 }
