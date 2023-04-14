@@ -18,6 +18,11 @@ export interface AppContext {
 }
 
 export const TreeAppContext = React.createContext<AppContext | undefined>(undefined);
+export function useAppContext(): AppContext {
+    const ctx = React.useContext(TreeAppContext);
+    if (ctx == undefined) throw new Error("useAppContext called outside of AppContext");
+    return ctx;
+}
 
 export function appHooks(): {
     ctx: AppContext,
