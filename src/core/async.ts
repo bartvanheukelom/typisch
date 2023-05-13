@@ -124,3 +124,26 @@ export class Deferred<T> {
     }
 
 }
+
+
+// returns a function that call the given loader function when first called, and returns the result of that call on that and subsequent calls.
+// the loader is not executed in parallel, but only once. any calls made while the loader is
+// already running will return the same promise as the first call.
+// if the loader function throws an exception, that promise will be rejected,
+// but a subsequent call will retry the loader function.
+export function lazy<T>(loader: () => Promise<T>): () => Promise<T> {
+    let promise: Promise<T> | undefined = undefined;
+    return () => {
+        if (promise === undefined) {
+            promise = (async () => {
+                try {
+                    return await loader();
+                } catch (e) {
+                    promise = undefined;
+                    throw e;
+                }
+            })();
+        }
+        return promise;
+    };
+}
