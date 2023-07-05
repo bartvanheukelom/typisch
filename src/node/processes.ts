@@ -1,10 +1,10 @@
 import {streamToString} from "./streams";
 
 import {avoid} from "@typisch/core/lang";
+import {check} from "@typisch/core/safety";
 
-import child_process, {ChildProcessByStdio} from "child_process";
+import child_process, {ChildProcess, ChildProcessByStdio} from "child_process";
 import {Readable} from "stream";
-import {signal} from "@tensorflow/tfjs-node-gpu";
 
 
 /**
@@ -57,13 +57,19 @@ export async function readProcessOut(
 export function processSuccess(
     name: string,
     process: ChildProcessByStdio<any, any, any>,
-): avoid {
+): Promise<void> {
 
     if (process.exitCode !== null) {
         if (process.exitCode === 0) {
-            return;
+            return Promise.resolve();
         } else {
-            throw new ProcessError(`Process '${name}' (previously) closed with code ${process.exitCode} by signal ${signal}`, process.exitCode, process.signalCode);
+            return Promise.reject(
+                new ProcessError(
+                    `Process '${name}' (previously) closed with code ${process.exitCode} by signal ${process.signalCode}`,
+                    process.exitCode,
+                    process.signalCode,
+                )
+            );
         }
     }
 
@@ -81,5 +87,61 @@ export function processSuccess(
 class ProcessError extends Error {
     constructor(message: string, public code: number | null, public signal: NodeJS.Signals | null) {
         super(message);
+    }
+}
+
+
+class Process {
+
+    constructor(
+        private readonly builderState: BuilderState,
+        readonly process: ChildProcess,
+    ) {
+    }
+
+    get name(): string {
+        return this.builderState.name ?? this.builderState.command;
+    }
+
+    success(): Promise<void> {
+        return processSuccess(this.name, this.process);
+    }
+}
+
+
+
+interface BuilderState {
+    command: string;
+    args: string[];
+    name?: string;
+    options: child_process.SpawnOptions;
+}
+
+
+export class ProcessBuilder {
+
+    constructor(private readonly state: BuilderState) {
+    }
+
+    static command(...command: string[]): ProcessBuilder {
+        check(command.length > 0, "command must not be empty");
+        return new ProcessBuilder({ command: command[0], args: command.slice(1), options: {} });
+    }
+
+    name(name: string): ProcessBuilder {
+        return new ProcessBuilder({...this.state, name});
+    }
+
+    stdio(stdio: child_process.StdioOptions): ProcessBuilder {
+        return new ProcessBuilder({...this.state, options: {...this.state.options, stdio}});
+    }
+
+    spawn(): Process {
+        const spawnedProcess = child_process.spawn(
+            this.state.command,
+            this.state.args,
+            this.state.options,
+        );
+        return new Process(this.state, spawnedProcess);
     }
 }
