@@ -1,11 +1,11 @@
 import {Pm} from "./lang";
 import {Milliseconds} from "./types";
+import {log} from "./log";
+import {missingCase} from "./safety";
 
 // TEMP FIX AFTER REMOVING dom LIB
 // TODO properly
 declare function setTimeout(cb: () => void, delay: number): void;
-
-
 
 export type PromiseOrAsync<T> = Pm<T> | (() => Pm<T>);
 export type Awaitable<T> = T | Promise<T>;
@@ -35,8 +35,20 @@ export function launch<T>(f: () => Awaitable<T>): void {
  * `defer` itself will not throw a synchronous exception.
  */
 export function defer<T>(f: () => Awaitable<T>): Promise<T> {
+    const ps = recordPromiseStart();
     return new Promise((rs, rj) => {
-        const doIt = () => safeCall(f, rs, rj);
+        const doIt = () => {
+            try {
+                safeCall(f, rs, e => {
+                    ps.addToError(e);
+                    rj(e);
+                });
+            } catch (e) {
+                log(`WARN safeCall threw synchronous exception: ${e}`);
+                ps.addToError(e);
+                rj(e);
+            }
+        };
         // TODO use process.nextTick for node. https://developer.mozilla.org/en-US/docs/Web/API/Window/setImmediate workarounds for browser;
         setTimeout(doIt, 0);
     });
@@ -52,12 +64,16 @@ export function safeCall<T>(f: () => Awaitable<T>, resolve: (res: T) => void, re
     try {
         r = f();
     } catch (e) {
+        log(`QQQ safeCall f() threw ${e}`);
         reject(e);
         return;
     }
 
     if (r instanceof Promise) {
-        r.then(resolve, reject);
+        r.then(resolve, e => {
+            log(`QQQ safeCall Promise rejected with ${e}`);
+            reject(e);
+        });
     } else {
         resolve(r);
     }
@@ -97,12 +113,16 @@ export async function forEachAsync<T>(items: ReadonlyArray<T>, task: (v: T) => P
 
 /**
  * Container for a new Promise that can be resolved or rejected from outside.
+ * Can be resolved only once.
  */
 export class Deferred<T> {
 
     private readonly _promise: Promise<T>;
     private _resolve!: (value: T) => void;
     private _reject!: (reason?: any) => void;
+
+    private _resolution: ["resolved", T] | ["rejected", any] | undefined = undefined;
+
 
     constructor() {
         this._promise = new Promise((resolve, reject) => {
@@ -115,11 +135,61 @@ export class Deferred<T> {
         return this._promise;
     }
 
+    get isResolved(): boolean {
+        return this._resolution !== undefined;
+    }
+
+    /**
+     * If this Deferred has been resolved successfully, returns the value.
+     * Otherwise (i.e. if unresolved or rejected), throws an error.
+     */
+    get value(): T {
+        const res = this._resolution;
+        if (res === undefined) {
+            throw new Error("Trying to access value of unresolved Deferred");
+        } else if (res[0] === "resolved") {
+            return res[1];
+        } else if (res[0] === "rejected") {
+            throw new Error("Trying to access value of rejected Deferred");
+        } else {
+            missingCase(res as never, c => c[0]);
+        }
+    }
+
+
+    /**
+     * If this Deferred has been rejected, returns the error.
+     * Otherwise (i.e. if unresolved or resolved successfully), throws an error.
+     */
+    get error(): any {
+        const res = this._resolution;
+        if (res === undefined) {
+            throw new Error("Trying to access error of unresolved Deferred");
+        } else if (res[0] === "resolved") {
+            throw new Error("Trying to access error of success-resolved Deferred");
+        } else if (res[0] === "rejected") {
+            return res[1];
+        } else {
+            missingCase(res as never, c => c[0]);
+        }
+    }
+
+
+    // --- MUTATORS --- //
+
     resolve(value: T): void {
+        if (this._resolution !== undefined) {
+            throw new Error("Trying to resolve already resolved promise");
+        }
+        this._resolution = ["resolved", value];
         this._resolve(value);
     }
 
     reject(reason?: any): void {
+        if (this._resolution !== undefined) {
+            throw new Error("Trying to reject already resolved promise");
+        }
+        this._resolution = ["rejected", reason];
         this._reject(reason);
     }
 
@@ -146,4 +216,23 @@ export function lazy<T>(loader: () => Promise<T>): () => Promise<T> {
         }
         return promise;
     };
+}
+
+
+
+export const promiseStartStack = Symbol("promiseStartStack");
+
+export function recordPromiseStart() {
+    const stack = new Error().stack;
+    return {
+        addToError: (e: unknown) => {
+            if (e instanceof Error) {
+                (e as any)[promiseStartStack] = stack;
+            }
+        },
+    }
+}
+
+export function getPromiseStartStack(e: unknown): string | undefined {
+    return (e instanceof Error) ? (e as any)[promiseStartStack] : undefined;
 }
