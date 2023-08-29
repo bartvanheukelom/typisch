@@ -4,7 +4,6 @@
     "module": "es6",
     "lib": ["es2021"],
     "types": [],
-    "typeRoots": ["./node_modules/@types"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
