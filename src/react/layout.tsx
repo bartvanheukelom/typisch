@@ -1,6 +1,6 @@
 import React, {JSX, useLayoutEffect, useRef, useState} from "react";
 import {WH, XYWH} from "@typisch/core/layout";
-import {fitObject, ObjectFitMode} from "../core/layout";
+import {fitObject, ObjectFitMode, ObjectPosition} from "../core/layout";
 
 
 /**
@@ -19,6 +19,7 @@ export function ObjectViewer(props: {
     focus?: XYWH;
 
     mode?: ObjectFitMode;
+    position?: ObjectPosition;
 
     /**
      * Callback that renders the object. Must be rendered at a specific size which is passed as a parameter.

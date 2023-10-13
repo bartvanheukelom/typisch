@@ -28,6 +28,54 @@ export function xywhToTuple(xywh: XYWH): [x: number, y: number, w: number, h: nu
  */
 export type ObjectFitMode = "contain" | "cover";
 
+export interface ObjectPosition {
+    x?: LinearPosition;
+    y?: LinearPosition;
+}
+
+export interface LinearPositionInput {
+    objectSize: number;
+    containerSize: number;
+    scale: number;
+}
+export type LinearPositionFunction = (i: LinearPositionInput) => number;
+export type LinearPosition =
+    | "start" | "left" | "top"  // equivalent
+    | "end" | "right" | "bottom"
+    | "center" | "middle"
+
+    // from start
+    // | number  // 0-1
+    // | `${number}%` - TODO, how to handle object > container?
+    | `${number}px`
+    // TODO convenient equivalent for "from end"
+
+    | ((i: LinearPositionInput) => number);
+
+
+export function linearPositionFunction(pos: LinearPosition): LinearPositionFunction {
+    if (typeof pos === "function") return pos;
+    // if (typeof pos === "number") return () => pos;
+    if (pos.endsWith("px")) {
+        const px = parseFloat(pos.substring(0, pos.length - 2));
+        return (i) => px;
+    }
+    switch (pos) {
+        case "start":
+        case "left":
+        case "top":
+            return () => 0;
+        case "end":
+        case "right":
+        case "bottom":
+            return (i) => i.containerSize - i.objectSize;
+        case "center":
+        case "middle":
+            return (i) => (i.containerSize - i.objectSize) / 2;
+    }
+    throw new Error(`Invalid position: ${pos}`);
+}
+
 
 /**
  * Calculate the bounding box for an object so that the focus rectangle (in object coordinates)
@@ -42,6 +90,7 @@ export function fitObject(o: {
     containerSize: WH;
     focus?: XYWH;
     mode?: ObjectFitMode;
+    position?: ObjectPosition;
 }): XYWH {
     const mode = o.mode ?? "contain";
     const focus: XYWH = o.focus ?? { x: 0, y: 0, w: o.objectSize.w, h: o.objectSize.h };
@@ -50,10 +99,21 @@ export function fitObject(o: {
         ? Math.max(o.containerSize.w / focus.w, o.containerSize.h / focus.h)
         : Math.min(o.containerSize.w / focus.w, o.containerSize.h / focus.h);
 
-    const x = o.containerSize.w / 2 - (focus.x + focus.w / 2) * scale;
-    const y = o.containerSize.h / 2 - (focus.y + focus.h / 2) * scale;
-    const w = o.objectSize.w * scale;
-    const h = o.objectSize.h * scale;
+    const scaleSize = {
+        w: o.objectSize.w * scale,
+        h: o.objectSize.h * scale,
+    }
 
-    return { x, y, w, h };
+    const xpos = o.position?.x ?? "center";
+    const xfpos = linearPositionFunction(xpos);
+    const fx = xfpos({ objectSize: focus.w * scale, containerSize: o.containerSize.w, scale });
+    const x = fx - focus.x * scale;
+
+    const ypos = o.position?.y ?? "center";
+    const yfpos = linearPositionFunction(ypos);
+    const fy = yfpos({ objectSize: focus.h * scale, containerSize: o.containerSize.h, scale });
+    const y = fy - focus.y * scale;
+
+    return { x, y, ...scaleSize };
+
 }
