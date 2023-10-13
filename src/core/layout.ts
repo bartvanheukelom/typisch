@@ -33,13 +33,16 @@ export interface ObjectPosition {
     y?: LinearPosition;
 }
 
+export type LinearPositionFunction = (i: LinearPositionInput) => number;
 export interface LinearPositionInput {
     objectSize: number;
     containerSize: number;
     scale: number;
 }
-export type LinearPositionFunction = (i: LinearPositionInput) => number;
+
 export type LinearPosition =
+    | LinearPositionFunction
+
     | "start" | "left" | "top"  // equivalent
     | "end" | "right" | "bottom"
     | "center" | "middle"
@@ -49,8 +52,7 @@ export type LinearPosition =
     // | `${number}%` - TODO, how to handle object > container?
     | `${number}px`
     // TODO convenient equivalent for "from end"
-
-    | ((i: LinearPositionInput) => number);
+;
 
 
 export function linearPositionFunction(pos: LinearPosition): LinearPositionFunction {
