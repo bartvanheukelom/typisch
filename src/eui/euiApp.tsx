@@ -6,15 +6,20 @@ import {
 } from "@elastic/eui";
 import {Toast} from "@elastic/eui/src/components/toast/global_toast_list";
 
-
+export type ToastId = string; // TODO brand
 
 export type RenderFunction = (props: { appCtx: AppContext }) => JSX.Element
 export type Consumer<T> = (a: T) => void
-export type ToastShow = Omit<Toast, "id"> | string
+export type ToastShow = (
+    Omit<Toast, "id"> & { id?: ToastId }
+) | string
 export interface AppContext {
     openModal(rf: RenderFunction): void;
     closeModal(): void;
-    showToast(toast: ToastShow): void;
+    showToast(toast: ToastShow): {
+        id: ToastId;
+        remove(): void;
+    };
 }
 
 export const TreeAppContext = React.createContext<AppContext | undefined>(undefined);
@@ -60,12 +65,20 @@ export function appHooks(): {
             showToast(toast: ToastShow) {
                 const [toasts, setToasts] = state().toasts
                 if (typeof toast == 'string') toast = {text: toast}
-                const id = Math.random().toString()
-                console.log(`toasts = ${toasts.length} + ${id}`)
+                const id = toast.id ?? Math.random().toString()
+                // TODO update instead of remove/add. but with option to push to front.
+                removeToast(id);
+                console.log(`toasts = ${toasts.length} + ${id}`);
                 setToasts([...toasts, {
                     id,
                     ...toast,
-                }])
+                }]);
+                return {
+                    id,
+                    remove() {
+                        removeToast(this.id);
+                    }
+                };
             },
         }
     }, [])
