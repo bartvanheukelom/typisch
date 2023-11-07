@@ -13,8 +13,10 @@ export const iso8601 = {
 
     now: () =>
         iso8601.from(new Date()),
-    today: () =>
-        iso8601.from(new Date()).slice(0, 10) as IsoDate,
+
+    today() {
+        return this.dateOf(new Date());
+    },
 
     from: (date: Date) =>
         date.toISOString() as Iso8601,
@@ -27,6 +29,13 @@ export const iso8601 = {
             throw new Error(`Invalid ISO 8601 timestamp: ${JSON.stringify(ts)}`);
         }
         return d;
+    },
+
+    dateOf(date: Date | Iso8601): IsoDate {
+        if (typeof date === "string") {
+            date = this.parse(date);
+        }
+        return date.toISOString().slice(0, 10) as IsoDate;
     },
 
 }
