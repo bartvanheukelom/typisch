@@ -84,7 +84,7 @@ export interface MultiplyStream {
 export function multiplyStream(input: Readable): MultiplyStream {
 
     const cInput = countingPipe();
-    input.pipe(cInput.pipe);
+    input.pipe(cInput.pipe); // TODO pipe bad (doesn't close all streams on error), use compose
 
     const outputs: CountingPipe[] = [];
 
@@ -94,7 +94,7 @@ export function multiplyStream(input: Readable): MultiplyStream {
             // TODO throw error if called when the input has already started flowing
             const co = countingPipe();
             outputs.push(co);
-            cInput.pipe.pipe(co.pipe);
+            cInput.pipe.pipe(co.pipe); // TODO pipe bad (doesn't close all streams on error), use compose
             return co.pipe;
         },
 
