@@ -30,6 +30,17 @@ export function launch<T>(f: () => Awaitable<T>): void {
 }
 
 /**
+ * Communicate that you're intentionally not awaiting the given Promise,
+ * both to developers and to tools that may otherwise warn about unawaited Promises.
+ *
+ * At runtime this function does absolutely nothing. Particularly, it can't handle
+ * any exception thrown during the creation of [p], which has already happened.
+ * Consider using `launch` or `defer` instead, if you really want to fire and forget a task.
+ */
+// noinspection JSUnusedLocalSymbols
+export function nowait(p: Promise<unknown>): void {}
+
+/**
  * Schedule the given function to launch in the very very near future, but some time after the calling code is done.
  * Returns a promise that will eventually resolve or reject with the result of `f`.
  * `defer` itself will not throw a synchronous exception.

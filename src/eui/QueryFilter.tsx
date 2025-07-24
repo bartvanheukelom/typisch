@@ -5,9 +5,21 @@ import {EuiFieldText} from "@elastic/eui/src/components/form/field_text";
 import {useState} from "react";
 import React from "react";
 
+export interface QueryFilterModder {
+    whereText: string;
+    setWhereText(text: string): void;
+}
+
 export function QueryFilter(props: {
     label?: string; // TODO PrependOrAppendType
     where: string | null;
+    buttons?: {
+        key?: string;
+        iconType: IconType;
+        label: string;
+        disabled: boolean;
+        onClick: (m: QueryFilterModder) => void;
+    }[];
     apply: (filter: {
         where: string | null;
     }) => void;
@@ -36,16 +48,21 @@ export function QueryFilter(props: {
         });
     };
 
+    const modder: QueryFilterModder = {
+        whereText,
+        setWhereText,
+    };
+
     const But = ({iconType, label, disabled, onClick}: {
         iconType: IconType;
         label: string;
         disabled: boolean;
-        onClick: () => void;
+        onClick: (m: QueryFilterModder) => void;
     }) =>
         <EuiFlexItem grow={false}>
             <EuiButtonIcon aria-label={label} title={label}
                            iconType={iconType} size="s" display="base"
-                           disabled={disabled} onClick={onClick} />
+                           disabled={disabled} onClick={() => onClick(modder)} />
         </EuiFlexItem>;
 
     return <EuiFlexGroup gutterSize="s">
@@ -63,6 +80,10 @@ export function QueryFilter(props: {
                               }
                           }} />
         </EuiFlexItem>
+
+        {props.buttons?.map(b =>
+            <But key={b.key ?? b.label} {...b} />
+        )}
 
         <But iconType="search" label={filterChanged ? "Apply changes" : "No changes to apply"} disabled={!filterChanged} onClick={applyFilter} />
         <But iconType="editorUndo" label={filterChanged ? "Revert changes" : "No changes to revert"} disabled={!filterChanged} onClick={cancel} />
