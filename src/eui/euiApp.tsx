@@ -67,32 +67,38 @@ export function appHooks(): {
 
     return {
         ctx: appCtx,
-        comps: () => (<React.Fragment>
-            {modals.length == 0 ? null : (() => {
-                    const mm = { modal: modals[modals.length - 1] }
+        comps: () => {
+            // TODO doesn't work
+            // if (arguments.length > 0) {
+            //     throw new Error("Place appHooks().comps into your element tree like {app.comps()}, not <app.comps />. The latter would remount every time as comps has no stable identity.");
+            // }
+            return (<React.Fragment>
+                {modals.length == 0 ? null : (() => {
+                    const mm = {modal: modals[modals.length - 1]}
                     return <EuiModal onClose={() => {
                         const nm = modals.slice(0, modals.length - 1);
                         setModals(nm);
                     }}>
-                    <mm.modal appCtx={appCtx} />
+                        <mm.modal appCtx={appCtx}/>
                     </EuiModal>
                 })()}
 
-            {flyout == null ? null : (() => {
-                // TODO how to do it without this wrapper
-                const ff = { flyout }
-                return <EuiFlyout
-                    ownFocus
-                onClose={() => setFlyout(null)}
-            >
-                <ff.flyout appCtx={appCtx} />
-                </EuiFlyout>
-            })()}
+                {flyout == null ? null : (() => {
+                    // TODO how to do it without this wrapper
+                    const ff = {flyout}
+                    return <EuiFlyout
+                        ownFocus
+                        onClose={() => setFlyout(null)}
+                    >
+                        <ff.flyout appCtx={appCtx}/>
+                    </EuiFlyout>
+                })()}
 
-            <EuiGlobalToastList
-                dismissToast={t => removeToast(t.id)}
-            toasts={toasts}
-            toastLifeTimeMs={5000} />
-        </React.Fragment>)
+                <EuiGlobalToastList
+                    dismissToast={t => removeToast(t.id)}
+                    toasts={toasts}
+                    toastLifeTimeMs={5000}/>
+            </React.Fragment>);
+        }
     }
 }
