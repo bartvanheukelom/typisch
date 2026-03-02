@@ -75,6 +75,8 @@ export function countingPipe(): CountingPipe {
 
 export interface MultiplyStream {
     output(): Readable;
+    /** Mark an output as abandoned so afterEndCheck skips it. Destroys the stream. */
+    abandon(output: Readable): void;
     afterEndCheck(expectBytes?: number): void;
 }
 
@@ -87,6 +89,7 @@ export function multiplyStream(input: Readable): MultiplyStream {
     input.pipe(cInput.pipe); // TODO pipe bad (doesn't close all streams on error), use compose
 
     const outputs: CountingPipe[] = [];
+    const abandoned = new Set<CountingPipe>();
 
     return {
 
@@ -98,6 +101,14 @@ export function multiplyStream(input: Readable): MultiplyStream {
             return co.pipe;
         },
 
+        abandon(output: Readable): void {
+            const co = outputs.find(o => o.pipe === output);
+            if (co) {
+                abandoned.add(co);
+                co.pipe.destroy();
+            }
+        },
+
         afterEndCheck(expectBytes = -1) {
             // TODO check all done/ended/whatever
             const read = cInput.bytes;
@@ -105,6 +116,7 @@ export function multiplyStream(input: Readable): MultiplyStream {
                 throw new Error(`MultiplyStream: Read ${formatFileSize(read)} but expected ${formatFileSize(expectBytes)}`);
             }
             for (const co of outputs) {
+                if (abandoned.has(co)) continue;
                 if (co.bytes != read) {
                     throw new Error(`MultiplyStream: Read ${formatFileSize(read)} but one of the outputs transfered ${formatFileSize(co.bytes)}`);
                 }
