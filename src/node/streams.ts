@@ -82,6 +82,11 @@ export interface MultiplyStream {
     afterEndCheck(expectBytes?: number): void;
 }
 
+export interface MultiplyStreamOptions {
+    /** highWaterMark for each output PassThrough. Default: Node.js default (16 kB). */
+    highWaterMark?: number;
+}
+
 interface OutputEntry {
     stream: PassThrough;
     bytes: number;
@@ -109,7 +114,7 @@ function makeOutputEntry(stream: PassThrough): OutputEntry {
  * All outputs must be created (via {@link output}) before the first consumer
  * starts reading, since the pump begins lazily on the first downstream read.
  */
-export function multiplyStream(input: Readable): MultiplyStream {
+export function multiplyStream(input: Readable, options?: MultiplyStreamOptions): MultiplyStream {
 
     const outputs: OutputEntry[] = [];
     let inputBytes = 0;
@@ -172,7 +177,7 @@ export function multiplyStream(input: Readable): MultiplyStream {
 
         output(): Readable {
             if (pumpStarted) throw new Error("multiplyStream: cannot add outputs after consumption has started");
-            const stream = new PassThrough();
+            const stream = new PassThrough(options);
             const entry = makeOutputEntry(stream);
             outputs.push(entry);
 
